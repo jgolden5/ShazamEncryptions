@@ -51,9 +51,14 @@ find_pw_cut_off_var() { #same parameters as match_pw, but $4 in this case varies
   return 1
 }
 
-find_pw_it_1() { #$1 = original hash; $2 = pw test name; $3 = cut-off-var; $4 = iteration 2 shan;
+find_pw_it_1() { #$1 = original hash; $2 = pw test name; $3 = cut-off-var; $4 = iteration 2 shan; $5 = max number of iterations
   local i=1
-  while [[ $i -lt 1000 ]]; do
+  if [[ ! $5 ]]; then
+    max_iterations=500
+  else
+    max_iterations=$5
+  fi
+  while [[ $i -le $max_iterations ]]; do
     match_pw "$1" "$2" "$i" "$3" "$4" > /dev/null
     if [[ $? == 0 ]]; then
       echo "Iteration $i: ✅ Success!"
@@ -65,9 +70,14 @@ find_pw_it_1() { #$1 = original hash; $2 = pw test name; $3 = cut-off-var; $4 = 
   done
 }
 
-find_pw_it_2() { #$1 = original hash; $2 = pw test name; $3 = iteration 1 shan; $4 = cut-off-var;
+find_pw_it_2() { #$1 = original hash; $2 = pw test name; $3 = iteration 1 shan; $4 = cut-off-var; $5 = max number of iterations
   local i=1
-  while [[ $i -lt 1000 ]]; do
+  if [[ ! $5 ]]; then
+    max_iterations=500
+  else
+    max_iterations=$5
+  fi
+  while [[ $i -le $max_iterations ]]; do
     match_pw "$1" "$2" "$3" "$4" "$i" > /dev/null
     if [[ $? == 0 ]]; then
       echo "Iteration $i: ✅ Success!"
