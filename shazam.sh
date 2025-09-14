@@ -25,7 +25,7 @@ gen_pw() { #$1 = password seed; $2 = number of iterations for shan func; $3 = cu
 match_pw() { #$1 = original hash; $2 = password to check; $3 = iterations round 1 for check; $4 = cut-off-var for check; $5 = iterations round 2 for check
   local original_hash="$1"
   local pw_to_check="$2"
-  local hash_to_check="$(gen_pass "$2" "$3" "$4" "$5")"
+  local hash_to_check="$(gen_pw "$2" "$3" "$4" "$5")"
   if [[ $original_hash == $hash_to_check ]]; then
     echo "✅ $original_hash = $hash_to_check" && return 0
   else
@@ -49,4 +49,21 @@ find_pw_cut_off_var() { #same parameters as match_pw, but $4 in this case varies
   done
   echo "no successful matches were found :("
   return 1
+}
+
+find_pw_it_1() { #$1 = original hash; $2 = pw test name; $3 = cut-off-var; $4 = iteration 2 shan;
+  local i=1
+  while [[ $i -lt 1000 ]]; do
+    match_pw "$1" "$2" "$i" "$3" "$4" > /dev/null
+    if [[ $? == 0 ]]; then
+      echo "Iteration $i: ✅ Success!"
+      return 0
+    else
+      echo "Iteration $i: ❌"
+      i=$((i + 1))
+    fi
+    if (( $i % 100 == 0 )); then
+      echo "iteration $i was passed"
+    fi
+  done
 }
