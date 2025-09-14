@@ -62,8 +62,19 @@ find_pw_it_1() { #$1 = original hash; $2 = pw test name; $3 = cut-off-var; $4 = 
       echo "Iteration $i: ❌"
       i=$((i + 1))
     fi
-    if (( $i % 100 == 0 )); then
-      echo "iteration $i was passed"
+  done
+}
+
+find_pw_it_2() { #$1 = original hash; $2 = pw test name; $3 = iteration 1 shan; $4 = cut-off-var;
+  local i=1
+  while [[ $i -lt 1000 ]]; do
+    match_pw "$1" "$2" "$3" "$4" "$i" > /dev/null
+    if [[ $? == 0 ]]; then
+      echo "Iteration $i: ✅ Success!"
+      return 0
+    else
+      echo "Iteration $i: ❌"
+      i=$((i + 1))
     fi
   done
 }
