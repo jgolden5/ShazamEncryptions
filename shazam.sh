@@ -27,8 +27,26 @@ match_pw() { #$1 = original hash; $2 = password to check; $3 = iterations round 
   local pw_to_check="$2"
   local hash_to_check="$(gen_pass "$2" "$3" "$4" "$5")"
   if [[ $original_hash == $hash_to_check ]]; then
-    echo "✅ $original_hash = $hash_to_check"
+    echo "✅ $original_hash = $hash_to_check" && return 0
   else
-    echo "❌ $original_hash != $hash_to_check"
+    echo "❌ $original_hash != $hash_to_check" && return 1
   fi
+}
+
+#Note this is the easiest case because all parameters for gen_pw are known except $3, because $3 has fixed limits (56 due to length of sha256 hash), and can therefore be guessed the quickest
+#Also note this function assumes that all parameters are known besides $4 (cut-off-var)
+find_pw_cut_off_var() { #same parameters as match_pw, but $4 in this case varies by loop iteration number, so $5 replaces $4.
+  local i=0
+  while [[ $i -le 56 ]]; do
+    match_pw $1 $2 $3 $i $4 > /dev/null
+    if [[ $? == 0 ]]; then
+      echo "Iteration $i: ✅ Success!"
+      return 0
+    else
+      echo "Iteration $i: ❌"
+      i=$((i + 1))
+    fi
+  done
+  echo "no successful matches were found :("
+  return 1
 }
