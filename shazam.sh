@@ -18,7 +18,7 @@ cut_at_n() { #stdin = input; $1 = cut-off-point
   echo "${input:$cut_off_point:40}"
 }
 
-gen_pw() { #$1 = password seed; $2 = number of iterations for shan func; $3 = cut-off-var (0 <= $3 <= 56); $4 = number of iterations on round 2
+gen_pw() { #$1 = password seed; $2 = number of iterations for shan func; $3 = cut-off-var (0 <= $3 <= 96); $4 = number of iterations on round 2
   echo "$1" | shan "$2" | sha384 | cut_at_n "$3" | shan "$4" | sha256
 }
 
@@ -33,11 +33,11 @@ match_pw() { #$1 = original hash; $2 = password to check; $3 = iterations round 
   fi
 }
 
-#Note this is the easiest case because all parameters for gen_pw are known except $3, because $3 has fixed limits (56 due to length of sha256 hash), and can therefore be guessed the quickest
+#Note this is the easiest case because all parameters for gen_pw are known except $3, because $3 has fixed limits (96 due to inputs that will generate unique sha256 hash), and can therefore be guessed the quickest
 #Also note this function assumes that all parameters are known besides $4 (cut-off-var)
 find_pw_cut_off_var() { #same parameters as match_pw, but $4 in this case varies by loop iteration number, so $5 replaces $4.
   local i=0
-  while [[ $i -le 56 ]]; do
+  while [[ $i -le 96 ]]; do
     match_pw $1 $2 $3 $i $4 > /dev/null
     if [[ $? == 0 ]]; then
       echo "Iteration $i: ✅ Success!"
