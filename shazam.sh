@@ -68,6 +68,7 @@ find_pw_it_1() { #$1 = original hash; $2 = pw test name; $3 = cut-off-var; $4 = 
       i=$((i + 1))
     fi
   done
+  return 1
 }
 
 find_pw_it_2() { #$1 = original hash; $2 = pw test name; $3 = iteration 1 shan; $4 = cut-off-var; $5 = max number of iterations
@@ -87,4 +88,5 @@ find_pw_it_2() { #$1 = original hash; $2 = pw test name; $3 = iteration 1 shan; 
       i=$((i + 1))
     fi
   done
+  return 1
 }
