@@ -1,3 +1,4 @@
 look up cool things from online github projects also aiming to improve password encryption quality
 identify what the Password.hash() function does in password4j project and then implement a similar version of it in shazam, whether it's in bash or java
 do the same as ^ for addSalt() and addPepper()
+also look into how libsodium (written in c) implements Argon2 in order to understand Argon2 better
